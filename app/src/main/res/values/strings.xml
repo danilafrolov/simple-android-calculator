@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CftCalculator</string>
+    <string name="clearBtnText">CE</string>
+    <string name="questionBtnText">\?</string>
+</resources>
