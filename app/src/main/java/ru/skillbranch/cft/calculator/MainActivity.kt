@@ -4,6 +4,8 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import ru.skillbranch.cft.calculator.utils.CalculationUtils
+import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
@@ -83,8 +85,36 @@ class MainActivity : AppCompatActivity() {
         btn_action_ternary.setOnClickListener {
             onDigitButtonClick("?")
         }
+        btn_left_bracket.setOnClickListener {
+            onDigitButtonClick("(")
+        }
+        btn_right_bracket.setOnClickListener {
+            onDigitButtonClick(")")
+        }
+        btn_dot.setOnClickListener {
+            onDigitButtonClick(".")
+        }
         btn_backspace.setOnClickListener {
             onBackspaceButtonClick()
+        }
+        btn_action_result.setOnClickListener {
+            onResultButtonClick()
+        }
+    }
+
+    private fun onResultButtonClick() {
+        val expression = tv_expression.text
+        if (expression.isNullOrEmpty()) {
+            return
+        }
+        try {
+            val result = CalculationUtils.calculateExpression(expression.toString())
+            tv_expression.setText(result.toString())
+            tv_expression.setSelection(tv_expression.text.length)
+            tv_result.text = ""
+        } catch (e: Exception) {
+            tv_result.text = e.message
+            println(e)
         }
     }
 
@@ -93,6 +123,7 @@ class MainActivity : AppCompatActivity() {
         val end = tv_expression.selectionEnd
         tv_expression.text.replace(start, end, "")
         tv_expression.text.insert(start, number)
+        evaluateExpression()
     }
 
     private fun onBackspaceButtonClick() {
@@ -103,8 +134,22 @@ class MainActivity : AppCompatActivity() {
             if (length > 0) {
                 tv_expression.text.delete(start - 1, start)
             }
+        } else {
+            tv_expression.text.replace(start, end, "")
+        }
+        evaluateExpression()
+    }
+
+    private fun evaluateExpression() {
+        val expression = tv_expression.text
+        if (expression.isNullOrEmpty()) {
             return
         }
-        tv_expression.text.replace(start, end, "")
+        try {
+            val result = CalculationUtils.calculateExpression(expression.toString())
+            tv_result.text = result.toString()
+        } catch (e: Exception) {
+            println(e)
+        }
     }
 }
