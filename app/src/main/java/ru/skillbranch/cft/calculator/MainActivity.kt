@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         val end = tv_expression.selectionEnd
         if (start == end) {
             val length = tv_expression.text.length
-            if (length > 0) {
+            if (length > 0 && start > 0) {
                 tv_expression.text.delete(start - 1, start)
             }
         } else {
