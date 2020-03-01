@@ -115,6 +115,11 @@ class MainActivity : AppCompatActivity() {
         if (expression.isNullOrEmpty()) {
             return
         }
+        if (!isValidExpression(expression.toString())) {
+            val toast = Toast.makeText(applicationContext, INCORRECT_EXCEPTION_MESSAGE, LENGTH_SHORT)
+            toast.show()
+            return
+        }
         try {
             val result = CalculationUtils.calculateExpression(expression.toString())
             tv_expression.setText(result.toString())
