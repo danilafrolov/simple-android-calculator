@@ -2,23 +2,18 @@ package ru.skillbranch.cft.calculator
 
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import ru.skillbranch.cft.calculator.constants.*
+import ru.skillbranch.cft.calculator.extensions.*
 import ru.skillbranch.cft.calculator.utils.CalculationUtils
 import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
-    private val ZERO: String = "0" // Value cannot be changed.
-    private val ONE: String = "1"
-    private val TWO: String = "2"
-    private val THREE: String = "3"
-    private val FOUR: String = "4"
-    private val FIVE: String = "5"
-    private val SIX: String = "6"
-    private val SEVEN: String = "7"
-    private val EIGHT: String = "8"
-    private val NINE: String = "9"
+    private val operators = listOf(ADD, SUBTRACT, MULTIPLY, DIVIDE, LEFT_PARENTHESIS, RIGHT_PARENTHESIS, POINT)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,28 +66,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun initActionButtons() {
         btn_action_add.setOnClickListener {
-            onDigitButtonClick("+")
+            onOperatorButtonClick(ADD)
         }
         btn_action_subtract.setOnClickListener {
-            onDigitButtonClick("-")
+            onOperatorButtonClick(SUBTRACT)
         }
         btn_action_multiply.setOnClickListener {
-            onDigitButtonClick("×")
+            onOperatorButtonClick(MULTIPLY)
         }
         btn_action_divide.setOnClickListener {
-            onDigitButtonClick("÷")
+            onOperatorButtonClick(DIVIDE)
         }
-        btn_action_del.setOnClickListener {
-            onDigitButtonClick("?")
+        btn_left_parenthesis.setOnClickListener {
+            onDigitButtonClick(LEFT_PARENTHESIS)
         }
-        btn_left_bracket.setOnClickListener {
-            onDigitButtonClick("(")
-        }
-        btn_right_bracket.setOnClickListener {
-            onDigitButtonClick(")")
+        btn_right_parenthesis.setOnClickListener {
+            onDigitButtonClick(RIGHT_PARENTHESIS)
         }
         btn_dot.setOnClickListener {
-            onDigitButtonClick(".")
+            onOperatorButtonClick(POINT)
         }
         btn_backspace.setOnClickListener {
             onBackspaceButtonClick()
@@ -111,11 +103,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onResultButtonClick() {
-        val expression = tv_expression.text
+        val expression = tv_expression.text?.toString()
         if (expression.isNullOrEmpty()) {
             return
         }
-        if (!isValidExpression(expression.toString())) {
+        if (!expression.isValidExpression()) {
             val toast = Toast.makeText(applicationContext, INCORRECT_EXCEPTION_MESSAGE, LENGTH_SHORT)
             toast.show()
             return
@@ -138,6 +130,22 @@ class MainActivity : AppCompatActivity() {
         evaluateExpression()
     }
 
+    private fun onOperatorButtonClick(operator: String) {
+        val start = tv_expression.selectionStart
+        val end = tv_expression.selectionEnd
+        if (start == end) {
+            if (operators.contains(tv_expression.text.getOrNull(start)?.toString())) {
+                return
+            }
+        } else if (operators.contains(tv_expression.text.getOrNull(start - 1)?.toString())
+            || operators.contains(tv_expression.text.getOrNull(end + 1)?.toString())
+        ) {
+            return
+        }
+        tv_expression.text.replace(start, end, operator)
+        evaluateExpression()
+    }
+
     private fun onBackspaceButtonClick() {
         val start = tv_expression.selectionStart
         val end = tv_expression.selectionEnd
@@ -153,8 +161,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun evaluateExpression() {
-        val expression = tv_expression.text
-        if (expression.isNullOrEmpty()) {
+        val expression = tv_expression.text?.toString()
+        if (expression.isNullOrEmpty() || !expression.hasOperators() || !expression.isValidExpression()) {
             tv_result.text = ""
             return
         }

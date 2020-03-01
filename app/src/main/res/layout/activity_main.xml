@@ -23,7 +23,8 @@
     <TextView
             android:id="@+id/tv_result"
             android:textColor="@color/color_button_result"
-            android:textSize="40sp"
+            app:autoSizeTextType="uniform"
+            app:autoSizePresetSizes="@array/auto_size_text_sizes"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:paddingLeft="8dp"
@@ -52,11 +53,11 @@
             app:layout_constraintTop_toBottomOf="@+id/divider"
             android:layout_marginTop="16dp" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="16dp" app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintEnd_toStartOf="@+id/btn_left_bracket"
+            app:layout_constraintEnd_toStartOf="@+id/btn_left_parenthesis"
             app:layout_constraintBottom_toTopOf="@+id/btn_digit_seven"
     />
     <Button
-            android:id="@+id/btn_left_bracket"
+            android:id="@+id/btn_left_parenthesis"
             style="@style/CalculatorButton.Action"
             android:text="("
             android:textSize="24sp"
@@ -64,27 +65,27 @@
             android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/btn_backspace"
             app:layout_constraintTop_toTopOf="@+id/btn_backspace"
-            app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toStartOf="@+id/btn_right_bracket"/>
+            app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toStartOf="@+id/btn_right_parenthesis"/>
     <Button
-            android:id="@+id/btn_right_bracket"
+            android:id="@+id/btn_right_parenthesis"
             style="@style/CalculatorButton.Action"
             android:text=")"
             android:textSize="24sp"
-            app:layout_constraintStart_toEndOf="@+id/btn_left_bracket"
+            app:layout_constraintStart_toEndOf="@+id/btn_left_parenthesis"
             android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_left_bracket"
-            app:layout_constraintTop_toTopOf="@+id/btn_left_bracket"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_left_parenthesis"
+            app:layout_constraintTop_toTopOf="@+id/btn_left_parenthesis"
             app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toStartOf="@+id/btn_action_divide"/>
     <Button
             android:id="@+id/btn_action_divide"
             style="@style/CalculatorButton.Action"
             android:text="÷"
-            app:layout_constraintStart_toEndOf="@+id/btn_right_bracket"
+            app:layout_constraintStart_toEndOf="@+id/btn_right_parenthesis"
             android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_right_bracket"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_right_parenthesis"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="16dp" app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintTop_toTopOf="@+id/btn_right_bracket"/>
+            app:layout_constraintTop_toTopOf="@+id/btn_right_parenthesis"/>
 
     <Button
             android:id="@+id/btn_digit_seven"

@@ -1,12 +1,12 @@
 package ru.skillbranch.cft.calculator.models
 
-import ru.skillbranch.cft.calculator.interfaces.IOperator
-import java.lang.Exception
+import ru.skillbranch.cft.calculator.interfaces.BaseOperator
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
+import kotlin.IllegalArgumentException
 
-enum class Operator(override val precedence: Int) : IOperator {
+enum class Operator(override val precedence: Int) : BaseOperator {
 
     ADD(1) {
         override fun applyOperator(firstOperand: BigDecimal, secondOperand: BigDecimal): BigDecimal {
@@ -25,8 +25,8 @@ enum class Operator(override val precedence: Int) : IOperator {
     },
     DIVIDE(4) {
         override fun applyOperator(firstOperand: BigDecimal, secondOperand: BigDecimal): BigDecimal {
-            if (secondOperand == BigDecimal.ZERO) {
-                throw Exception("Cannot divide by 0")
+            if (secondOperand.compareTo(BigDecimal.ZERO) == 0) {
+                throw IllegalArgumentException("Division by zero")
             }
             return firstOperand.divide(secondOperand, MathContext(8, RoundingMode.HALF_UP)).stripTrailingZeros()
         }

@@ -1,26 +1,15 @@
 package ru.skillbranch.cft.calculator.utils
 
-import ru.skillbranch.cft.calculator.interfaces.IOperator
-import ru.skillbranch.cft.calculator.models.Operator
+import ru.skillbranch.cft.calculator.constants.*
+import ru.skillbranch.cft.calculator.interfaces.BaseOperator
+import ru.skillbranch.cft.calculator.utils.Operators.OPERATORS
 import java.math.BigDecimal
 import java.util.*
 
 
 object CalculationUtils {
 
-    private const val LEFT_PARENTHESIS = "("
-    private const val RIGHT_PARENTHESIS = ")"
-
-    private val OPERATORS = hashMapOf<String, IOperator>(
-        "×" to Operator.MULTIPLY,
-        "÷" to Operator.DIVIDE,
-        "+" to Operator.ADD,
-        "-" to Operator.SUBTRACT,
-        LEFT_PARENTHESIS to Operator.PARENTHESIS,
-        RIGHT_PARENTHESIS to Operator.PARENTHESIS
-    )
-
-    private fun getOperator(token: String): IOperator {
+    private fun getOperator(token: String): BaseOperator {
         if (OPERATORS.containsKey(token)) {
             return OPERATORS[token]!!
         }
