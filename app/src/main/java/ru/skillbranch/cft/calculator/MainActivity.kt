@@ -133,13 +133,8 @@ class MainActivity : AppCompatActivity() {
     private fun onOperatorButtonClick(operator: String) {
         val start = tv_expression.selectionStart
         val end = tv_expression.selectionEnd
-        if (start == end) {
-            if (operators.contains(tv_expression.text.getOrNull(start)?.toString())) {
-                return
-            }
-        } else if (operators.contains(tv_expression.text.getOrNull(start - 1)?.toString())
-            || operators.contains(tv_expression.text.getOrNull(end + 1)?.toString())
-        ) {
+        val text = tv_expression.text.toString()
+        if (operators.contains(text.getOrNull(start - 1)?.toString()) || operators.contains(text.getOrNull(end)?.toString())) {
             return
         }
         tv_expression.text.replace(start, end, operator)
