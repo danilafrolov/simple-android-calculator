@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         btn_action_divide.setOnClickListener {
             onDigitButtonClick("÷")
         }
-        btn_action_ternary.setOnClickListener {
+        btn_action_del.setOnClickListener {
             onDigitButtonClick("?")
         }
         btn_left_bracket.setOnClickListener {
@@ -100,6 +100,14 @@ class MainActivity : AppCompatActivity() {
         btn_action_result.setOnClickListener {
             onResultButtonClick()
         }
+        btn_action_del.setOnClickListener {
+            onDeleteButtonClick()
+        }
+    }
+
+    private fun onDeleteButtonClick() {
+        tv_expression.text.clear()
+        tv_result.text = ""
     }
 
     private fun onResultButtonClick() {
@@ -121,8 +129,7 @@ class MainActivity : AppCompatActivity() {
     private fun onDigitButtonClick(number: String) {
         val start = tv_expression.selectionStart
         val end = tv_expression.selectionEnd
-        tv_expression.text.replace(start, end, "")
-        tv_expression.text.insert(start, number)
+        tv_expression.text.replace(start, end, number)
         evaluateExpression()
     }
 
@@ -143,6 +150,7 @@ class MainActivity : AppCompatActivity() {
     private fun evaluateExpression() {
         val expression = tv_expression.text
         if (expression.isNullOrEmpty()) {
+            tv_result.text = ""
             return
         }
         try {

@@ -1,23 +1,26 @@
 package ru.skillbranch.cft.calculator.models
 
+import ru.skillbranch.cft.calculator.interfaces.IOperator
 import java.lang.Exception
 import java.math.BigDecimal
+import java.math.MathContext
+import java.math.RoundingMode
 
-enum class Operator(val precedence: Int) {
+enum class Operator(override val precedence: Int) : IOperator {
 
-    ADD(0) {
+    ADD(1) {
         override fun applyOperator(firstOperand: BigDecimal, secondOperand: BigDecimal): BigDecimal {
-            return firstOperand + secondOperand
+            return firstOperand.add(secondOperand, MathContext(8, RoundingMode.HALF_UP)).stripTrailingZeros()
         }
     },
     SUBTRACT(2) {
         override fun applyOperator(firstOperand: BigDecimal, secondOperand: BigDecimal): BigDecimal {
-            return firstOperand - secondOperand
+            return firstOperand.subtract(secondOperand, MathContext(8, RoundingMode.HALF_UP)).stripTrailingZeros()
         }
     },
     MULTIPLY(3) {
         override fun applyOperator(firstOperand: BigDecimal, secondOperand: BigDecimal): BigDecimal {
-            return firstOperand * secondOperand
+            return firstOperand.multiply(secondOperand, MathContext(8, RoundingMode.HALF_UP)).stripTrailingZeros()
         }
     },
     DIVIDE(4) {
@@ -25,9 +28,14 @@ enum class Operator(val precedence: Int) {
             if (secondOperand == BigDecimal.ZERO) {
                 throw Exception("Cannot divide by 0")
             }
-            return firstOperand / secondOperand
+            return firstOperand.divide(secondOperand, MathContext(8, RoundingMode.HALF_UP)).stripTrailingZeros()
+        }
+    },
+    PARENTHESIS(5) {
+        override fun applyOperator(firstOperand: BigDecimal, secondOperand: BigDecimal): BigDecimal {
+            return BigDecimal.ZERO
         }
     };
 
-    abstract fun applyOperator(firstOperand: BigDecimal, secondOperand: BigDecimal): BigDecimal
+    abstract override fun applyOperator(firstOperand: BigDecimal, secondOperand: BigDecimal): BigDecimal
 }

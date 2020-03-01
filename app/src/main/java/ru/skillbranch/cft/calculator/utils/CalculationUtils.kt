@@ -1,134 +1,104 @@
 package ru.skillbranch.cft.calculator.utils
 
+import ru.skillbranch.cft.calculator.interfaces.IOperator
+import ru.skillbranch.cft.calculator.models.Operator
 import java.math.BigDecimal
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
-import kotlin.math.absoluteValue
 
 
 object CalculationUtils {
 
-    private val MAIN_MATH_OPERATIONS = hashMapOf(
-        "×" to 1,
-        "÷" to 1,
-        "+" to 2,
-        "-" to 2
+    private const val LEFT_PARENTHESIS = "("
+    private const val RIGHT_PARENTHESIS = ")"
+
+    private val OPERATORS = hashMapOf<String, IOperator>(
+        "×" to Operator.MULTIPLY,
+        "÷" to Operator.DIVIDE,
+        "+" to Operator.ADD,
+        "-" to Operator.SUBTRACT,
+        LEFT_PARENTHESIS to Operator.PARENTHESIS,
+        RIGHT_PARENTHESIS to Operator.PARENTHESIS
     )
 
-    private fun sortingStation(
-        expression: String?, operations: Map<String, Int>, leftBracket: String,
-        rightBracket: String
-    ): String {
-        var expression = expression
-        if (expression == null || expression.isEmpty())
-            throw IllegalStateException("Expression isn't specified.")
-        if (operations == null || operations.isEmpty())
-            throw IllegalStateException("Operations aren't specified.")
-        // Выходная строка, разбитая на "символы" - операции и операнды..
-        val out = ArrayList<String>()
-        // Стек операций.
-        val stack = Stack<String>()
-
-        // Удаление пробелов из выражения.
-        expression = expression.replace(" ", "")
-
-        // Множество "символов", не являющихся операндами (операции и скобки).
-        val operationSymbols = HashSet(operations.keys)
-        operationSymbols.add(leftBracket)
-        operationSymbols.add(rightBracket)
-
-        // Индекс, на котором закончился разбор строки на прошлой итерации.
-        var index = 0
-        // Признак необходимости поиска следующего элемента.
-        var findNext = true
-        while (findNext) {
-            var nextOperationIndex = expression.length
-            var nextOperation = ""
-            // Поиск следующего оператора или скобки.
-            for (operation in operationSymbols) {
-                val i = expression.indexOf(operation, index)
-                if (i in 0 until nextOperationIndex) {
-                    nextOperation = operation
-                    nextOperationIndex = i
-                }
-            }
-            // Оператор не найден.
-            if (nextOperationIndex == expression.length) {
-                findNext = false
-            } else {
-                // Если оператору или скобке предшествует операнд, добавляем его в выходную строку.
-                if (index != nextOperationIndex) {
-                    out.add(expression.substring(index, nextOperationIndex))
-                }
-                // Обработка операторов и скобок.
-                // Открывающая скобка.
-                when (nextOperation) {
-                    leftBracket -> stack.push(nextOperation)
-                    rightBracket -> {
-                        while (stack.peek() != leftBracket) {
-                            out.add(stack.pop())
-                            if (stack.empty()) {
-                                throw IllegalArgumentException("Unmatched brackets")
-                            }
-                        }
-                        stack.pop()
-                    }
-                    else -> {
-                        while (!stack.empty() && stack.peek() != leftBracket &&
-                            operations[nextOperation]!! >= operations[stack.peek()]!!
-                        ) {
-                            out.add(stack.pop())
-                        }
-                        stack.push(nextOperation)
-                    }
-                }// Операция.
-                // Закрывающая скобка.
-                index = nextOperationIndex + nextOperation.length
-            }
+    private fun getOperator(token: String): IOperator {
+        if (OPERATORS.containsKey(token)) {
+            return OPERATORS[token]!!
         }
-        // Добавление в выходную строку операндов после последнего операнда.
-        if (index != expression.length) {
-            out.add(expression.substring(index))
-        }
-        // Пробразование выходного списка к выходной строке.
-        while (!stack.empty()) {
-            out.add(stack.pop())
-        }
-        val result = StringBuffer()
-        if (out.isNotEmpty())
-            result.append(out.removeAt(0))
-        while (out.isNotEmpty())
-            result.append(" ").append(out.removeAt(0))
-
-        return result.toString()
+        throw IllegalArgumentException("Unknown operator: $token")
     }
 
-    fun sortingStation(expression: String, operations: Map<String, Int>): String {
-        return sortingStation(expression, operations, "(", ")")
+    fun getPostfixExpression(infixExpression: String): String {
+        val expression = infixExpression.replace(" ", "")
+        val result = ArrayList<String>()
+        val operationStack = Stack<String>()
+
+        var currentIndex = 0
+        var findNext = true
+        while (findNext) {
+            var nextOperatorIndex = expression.indexOfAny(OPERATORS.keys, currentIndex)
+            if (nextOperatorIndex == -1) {
+                findNext = false
+                continue
+            }
+            var token = expression[nextOperatorIndex].toString()
+            if (nextOperatorIndex > 0 && expression[nextOperatorIndex - 1] == 'E' && (expression[nextOperatorIndex] == '+' || expression[nextOperatorIndex] == '-')) {
+                nextOperatorIndex = expression.indexOfAny(OPERATORS.keys, nextOperatorIndex + 1)
+                token = expression[nextOperatorIndex].toString()
+            }
+            if (currentIndex != nextOperatorIndex) {
+                result.add(expression.substring(currentIndex, nextOperatorIndex))
+            }
+            when (token) {
+                LEFT_PARENTHESIS -> operationStack.push(token)
+                RIGHT_PARENTHESIS -> {
+                    while (operationStack.peek() != LEFT_PARENTHESIS) {
+                        result.add(operationStack.pop().toString())
+                    }
+                    operationStack.pop()
+                }
+                else -> {
+                    while (!operationStack.isEmpty() && operationStack.peek() != LEFT_PARENTHESIS
+                        && getOperator(token).precedence <= getOperator(operationStack.peek()).precedence
+                    ) {
+                        result.add(operationStack.pop().toString())
+                    }
+                    operationStack.push(token)
+                }
+            }
+            currentIndex = nextOperatorIndex + 1
+        }
+
+        if (currentIndex != expression.length) {
+            result.add(expression.substring(currentIndex))
+        }
+        while (!operationStack.empty()) {
+            result.add(operationStack.pop().toString())
+        }
+        return result.joinToString(" ")
     }
 
     fun calculateExpression(expression: String): BigDecimal {
-        val rpn = sortingStation(expression, MAIN_MATH_OPERATIONS)
-        val tokenizer = StringTokenizer(rpn, " ")
+        val postfixExpression = getPostfixExpression(expression)
+        val tokenizer = StringTokenizer(postfixExpression, " ")
         val stack = Stack<BigDecimal>()
         while (tokenizer.hasMoreTokens()) {
             val token = tokenizer.nextToken()
             // Операнд.
-            if (!MAIN_MATH_OPERATIONS.containsKey(token)) {
+            if (!OPERATORS.containsKey(token)) {
                 stack.push(BigDecimal(token))
             } else {
-                val operand2 = stack.pop()
-                val operand1 = if (stack.empty()) BigDecimal.ZERO else stack.pop()
-                when (token) {
-                    "×" -> stack.push(operand1.multiply(operand2))
-                    "÷" -> stack.push(operand1.divide(operand2))
-                    "+" -> stack.push(operand1.add(operand2))
-                    "-" -> stack.push(operand1.subtract(operand2))
+                val secondOperand = stack.pop()
+                val firstOperand = if (stack.empty()) BigDecimal.ZERO else stack.pop()
+                val result = getOperator(token).applyOperator(firstOperand, secondOperand)
+                if (result > BigDecimal("99999999")) {
+                    stack.push(result)
+                }
+                else {
+                    stack.push(BigDecimal(result.toPlainString()))
                 }
             }
         }
-        if (stack.size !== 1)
+        if (stack.size != 1)
             throw IllegalArgumentException("Expression syntax error.")
         return stack.pop()
     }
