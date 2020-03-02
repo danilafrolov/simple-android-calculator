@@ -12,7 +12,7 @@ const val EIGHT = "8"
 const val NINE = "9"
 
 const val ADD = "+"
-const val SUBTRACT = "−"
+const val SUBTRACT = "-"
 const val MULTIPLY = "×"
 const val DIVIDE = "÷"
 const val LEFT_PARENTHESIS = "("

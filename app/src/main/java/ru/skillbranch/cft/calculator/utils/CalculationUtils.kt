@@ -30,7 +30,9 @@ object CalculationUtils {
                 continue
             }
             var token = expression[nextOperatorIndex].toString()
-            if (nextOperatorIndex > 0 && expression[nextOperatorIndex - 1] == 'E' && (expression[nextOperatorIndex] == '+' || expression[nextOperatorIndex] == '-')) {
+            if ((nextOperatorIndex > 0 && expression[nextOperatorIndex - 1] == 'E') ||
+                (expression[nextOperatorIndex].toString() == SUBTRACT && expression.getOrNull(nextOperatorIndex - 1)?.toString() == LEFT_PARENTHESIS)
+            ) {
                 nextOperatorIndex = expression.indexOfAny(OPERATORS.keys, nextOperatorIndex + 1)
                 token = expression[nextOperatorIndex].toString()
             }
@@ -76,8 +78,7 @@ object CalculationUtils {
                 val number: BigDecimal
                 try {
                     number = BigDecimal(token)
-                }
-                catch (e: NumberFormatException) {
+                } catch (e: NumberFormatException) {
                     throw NumberFormatException("Incorrect input number: $token")
                 }
                 stack.push(number)
@@ -87,8 +88,7 @@ object CalculationUtils {
                 val result = getOperator(token).applyOperator(firstOperand, secondOperand)
                 if (result > BigDecimal("99999999")) {
                     stack.push(result)
-                }
-                else {
+                } else {
                     stack.push(BigDecimal(result.toPlainString()))
                 }
             }
