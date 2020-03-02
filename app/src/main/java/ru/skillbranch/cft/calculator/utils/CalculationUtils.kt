@@ -68,10 +68,9 @@ object CalculationUtils {
 
     fun calculateExpression(expression: String): BigDecimal {
         val postfixExpression = getPostfixExpression(expression)
-        val tokenizer = StringTokenizer(postfixExpression, " ")
+        val tokens = postfixExpression.split("\\s".toRegex())
         val stack = Stack<BigDecimal>()
-        while (tokenizer.hasMoreTokens()) {
-            val token = tokenizer.nextToken()
+        for (token in tokens) {
             // Операнд.
             if (!OPERATORS.containsKey(token)) {
                 val number: BigDecimal
