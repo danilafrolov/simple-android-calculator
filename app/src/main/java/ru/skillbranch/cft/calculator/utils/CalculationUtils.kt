@@ -74,7 +74,14 @@ object CalculationUtils {
             val token = tokenizer.nextToken()
             // Операнд.
             if (!OPERATORS.containsKey(token)) {
-                stack.push(BigDecimal(token))
+                val number: BigDecimal
+                try {
+                    number = BigDecimal(token)
+                }
+                catch (e: NumberFormatException) {
+                    throw NumberFormatException("Incorrect input number: $token")
+                }
+                stack.push(number)
             } else {
                 val secondOperand = stack.pop()
                 val firstOperand = if (stack.empty()) BigDecimal.ZERO else stack.pop()

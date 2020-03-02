@@ -13,7 +13,7 @@ import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
-    private val operators = listOf(ADD, SUBTRACT, MULTIPLY, DIVIDE, LEFT_PARENTHESIS, RIGHT_PARENTHESIS, POINT)
+    private val operators = listOf(ADD, SUBTRACT, MULTIPLY, DIVIDE, POINT)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
