@@ -6,6 +6,9 @@ import java.math.MathContext
 import java.math.RoundingMode
 import kotlin.IllegalArgumentException
 
+/**
+ * Реализация операторов для калькулятора, содержащая четыре основных математических оператора и скобки
+ */
 enum class Operator(override val precedence: Int) : BaseOperator {
 
     ADD(1) {

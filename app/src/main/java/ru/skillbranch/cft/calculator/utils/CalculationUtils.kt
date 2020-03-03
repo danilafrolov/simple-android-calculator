@@ -9,6 +9,14 @@ import java.util.*
 
 object CalculationUtils {
 
+    /**
+     * Если результат операции превышает заданное число, то записываем его в экспоненциальной форме, иначе оставляем как есть
+     */
+    private val maxPlainNumber = BigDecimal("999999999")
+
+    /** Получение оператора по его символу
+     * @param token - символ оператора
+     */
     private fun getOperator(token: String): BaseOperator {
         if (OPERATORS.containsKey(token)) {
             return OPERATORS[token]!!
@@ -16,26 +24,37 @@ object CalculationUtils {
         throw IllegalArgumentException("Unknown operator: $token")
     }
 
+    /**
+     * Преобразует выражение из инфиксной нотации в обратную польскую нотацию по алгоритму "Сортировочная
+     * станция" Эдскера Дейкстры.
+     * @param infixExpression выражение в инфиксной форме.
+     */
     fun getPostfixExpression(infixExpression: String): String {
+        // Удаление пробелов из исходного выражения
         val expression = infixExpression.replace(" ", "")
         val result = ArrayList<String>()
         val operationStack = Stack<String>()
 
+        // Индекс, на котором закончился разбор строки на прошлой итерации
         var currentIndex = 0
-        var findNext = true
-        while (findNext) {
+        while (true) {
+            // индекс следующего оператора в выражении
             var nextOperatorIndex = expression.indexOfAny(OPERATORS.keys, currentIndex)
             if (nextOperatorIndex == -1) {
-                findNext = false
-                continue
+                break
             }
             var token = expression[nextOperatorIndex].toString()
+            // Если знак оператора в экспоненциальной форме числа (например, 1.5E+8) или оператор - унарный минус, то игнорируем его и ищем следующий оператор
             if ((nextOperatorIndex > 0 && expression[nextOperatorIndex - 1] == 'E') ||
                 (expression[nextOperatorIndex].toString() == SUBTRACT && expression.getOrNull(nextOperatorIndex - 1)?.toString() == LEFT_PARENTHESIS)
             ) {
                 nextOperatorIndex = expression.indexOfAny(OPERATORS.keys, nextOperatorIndex + 1)
                 token = expression[nextOperatorIndex].toString()
+                if (nextOperatorIndex == -1) {
+                    break
+                }
             }
+            // Если оператору или скобке предшествует операнд, добавляем его в выходную строку
             if (currentIndex != nextOperatorIndex) {
                 result.add(expression.substring(currentIndex, nextOperatorIndex))
             }
@@ -48,6 +67,7 @@ object CalculationUtils {
                     operationStack.pop()
                 }
                 else -> {
+                    // Оператор
                     while (!operationStack.isEmpty() && operationStack.peek() != LEFT_PARENTHESIS
                         && getOperator(token).precedence <= getOperator(operationStack.peek()).precedence
                     ) {
@@ -59,21 +79,30 @@ object CalculationUtils {
             currentIndex = nextOperatorIndex + 1
         }
 
+        // Добавление в выходную строку операндов после последнего оператора
         if (currentIndex != expression.length) {
             result.add(expression.substring(currentIndex))
         }
+        // Добавление к выходной строке операторов из стека операторов
         while (!operationStack.empty()) {
             result.add(operationStack.pop().toString())
         }
         return result.joinToString(" ")
     }
 
+    /**
+     * Вычисляет значение выражения, записанного в инфиксной нотации. Выражение может содержать скобки, числа с
+     * плавающей точкой, четыре основных математических операнда.
+     *
+     * @param expression выражение.
+     * @return результат вычисления.
+     */
     fun calculateExpression(expression: String): BigDecimal {
         val postfixExpression = getPostfixExpression(expression)
         val tokens = postfixExpression.split("\\s".toRegex())
-        val stack = Stack<BigDecimal>()
+        val numbers = Stack<BigDecimal>()
         for (token in tokens) {
-            // Операнд.
+            // Операнд
             if (!OPERATORS.containsKey(token)) {
                 val number: BigDecimal
                 try {
@@ -81,20 +110,23 @@ object CalculationUtils {
                 } catch (e: NumberFormatException) {
                     throw NumberFormatException("Incorrect input number: $token")
                 }
-                stack.push(number)
+                numbers.push(number)
             } else {
-                val secondOperand = stack.pop()
-                val firstOperand = if (stack.empty()) BigDecimal.ZERO else stack.pop()
+                // Оператор - выполняем вычисление для верхних двух элементов стека
+                val secondOperand = numbers.pop()
+                val firstOperand = if (numbers.empty()) BigDecimal.ZERO else numbers.pop()
                 val result = getOperator(token).applyOperator(firstOperand, secondOperand)
-                if (result > BigDecimal("99999999")) {
-                    stack.push(result)
+                if (result > maxPlainNumber) {
+                    numbers.push(result)
                 } else {
-                    stack.push(BigDecimal(result.toPlainString()))
+                    numbers.push(BigDecimal(result.toPlainString()))
                 }
             }
         }
-        if (stack.size != 1)
+        if (numbers.size != 1) {
             throw IllegalArgumentException("Expression syntax error.")
-        return stack.pop()
+        }
+        // Последний элемент стека - результат вычисления выражения
+        return numbers.pop()
     }
 }

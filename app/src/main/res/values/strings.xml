@@ -1,5 +1,25 @@
 <resources>
     <string name="app_name">CftCalculator</string>
-    <string name="clearBtnText">CE</string>
-    <string name="questionBtnText">\?</string>
+
+    <string name="left_bracket_btn_text">(</string>
+    <string name="right_bracket_btn_text">)</string>
+    <string name="divide_btn_text">÷</string>
+    <string name="multiply_btn_text">×</string>
+    <string name="add_btn_text">+</string>
+    <string name="subtract_btn_text">–</string>
+    <string name="result_btn_text">=</string>
+    <string name="clear_btn_text">C</string>
+
+    <string name="digit_one_btn_text">1</string>
+    <string name="digit_two_btn_text">2</string>
+    <string name="digit_three_btn_text">3</string>
+    <string name="digit_four_btn_text">4</string>
+    <string name="digit_five_btn_text">5</string>
+    <string name="digit_six_btn_text">6</string>
+    <string name="digit_seven_btn_text">7</string>
+    <string name="digit_eight_btn_text">8</string>
+    <string name="digit_nine_btn_text">9</string>
+    <string name="digit_zero_btn_text">0</string>
+    <string name="point_btn_text">.</string>
+
 </resources>
