@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("ru.skillbranch.cft.calculator", appContext.packageName)
+        assertEquals("ru.cft.calculator", appContext.packageName)
     }
 }
