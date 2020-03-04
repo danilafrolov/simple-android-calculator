@@ -1,4 +1,4 @@
-package ru.skillbranch.cft.calculator.ui
+package ru.cft.calculator.ui
 
 import android.os.Build
 import android.os.Bundle
@@ -6,15 +6,22 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import ru.skillbranch.cft.calculator.R
-import ru.skillbranch.cft.calculator.constants.*
-import ru.skillbranch.cft.calculator.extensions.*
-import ru.skillbranch.cft.calculator.utils.CalculationUtils
+import ru.cft.calculator.constants.*
+import ru.cft.calculator.extensions.hasOperators
+import ru.cft.calculator.extensions.isValidExpression
+import ru.cft.calculator.R
+import ru.cft.calculator.utils.CalculationUtils
 import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
-    private val operators = listOf(ADD, SUBTRACT, MULTIPLY, DIVIDE, POINT)
+    private val operators = listOf(
+        ADD,
+        SUBTRACT,
+        MULTIPLY,
+        DIVIDE,
+        POINT
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,7 +120,8 @@ class MainActivity : AppCompatActivity() {
             return
         }
         if (!expression.isValidExpression()) {
-            val toast = Toast.makeText(applicationContext, INCORRECT_EXCEPTION_MESSAGE, LENGTH_SHORT)
+            val toast = Toast.makeText(applicationContext,
+                INCORRECT_EXCEPTION_MESSAGE, LENGTH_SHORT)
             toast.show()
             return
         }

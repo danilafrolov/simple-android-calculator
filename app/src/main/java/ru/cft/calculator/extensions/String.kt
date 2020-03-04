@@ -1,8 +1,14 @@
-package ru.skillbranch.cft.calculator.extensions
+package ru.cft.calculator.extensions
 
-import ru.skillbranch.cft.calculator.constants.*
+import ru.cft.calculator.constants.*
 
-private val operators = listOf(ADD, SUBTRACT, MULTIPLY, DIVIDE, POINT)
+private val operators = listOf(
+    ADD,
+    SUBTRACT,
+    MULTIPLY,
+    DIVIDE,
+    POINT
+)
 
 fun String.hasOperators(): Boolean {
     return this.any { operators.minus(POINT).contains(it.toString()) }

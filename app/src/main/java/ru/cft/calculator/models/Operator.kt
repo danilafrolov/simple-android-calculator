@@ -1,6 +1,6 @@
-package ru.skillbranch.cft.calculator.models
+package ru.cft.calculator.models
 
-import ru.skillbranch.cft.calculator.interfaces.BaseOperator
+import ru.cft.calculator.interfaces.BaseOperator
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode

@@ -1,8 +1,8 @@
-package ru.skillbranch.cft.calculator.utils
+package ru.cft.calculator.utils
 
-import ru.skillbranch.cft.calculator.constants.*
-import ru.skillbranch.cft.calculator.interfaces.BaseOperator
-import ru.skillbranch.cft.calculator.models.Operator
+import ru.cft.calculator.constants.*
+import ru.cft.calculator.interfaces.BaseOperator
+import ru.cft.calculator.models.Operator
 
 object Operators {
 

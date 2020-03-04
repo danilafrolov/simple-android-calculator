@@ -1,4 +1,4 @@
-package ru.skillbranch.cft.calculator.interfaces
+package ru.cft.calculator.interfaces
 
 import java.math.BigDecimal
 

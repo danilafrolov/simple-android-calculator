@@ -1,4 +1,4 @@
-package ru.skillbranch.cft.calculator.constants
+package ru.cft.calculator.constants
 
 const val ZERO = "0"
 const val ONE = "1"

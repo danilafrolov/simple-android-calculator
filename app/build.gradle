@@ -8,7 +8,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.1"
     defaultConfig {
-        applicationId "ru.skillbranch.cft.calculator"
+        applicationId "ru.cft.calculator"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1

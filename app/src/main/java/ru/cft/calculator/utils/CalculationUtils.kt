@@ -1,8 +1,10 @@
-package ru.skillbranch.cft.calculator.utils
+package ru.cft.calculator.utils
 
-import ru.skillbranch.cft.calculator.constants.*
-import ru.skillbranch.cft.calculator.interfaces.BaseOperator
-import ru.skillbranch.cft.calculator.utils.Operators.OPERATORS
+import ru.cft.calculator.constants.LEFT_PARENTHESIS
+import ru.cft.calculator.constants.RIGHT_PARENTHESIS
+import ru.cft.calculator.constants.SUBTRACT
+import ru.cft.calculator.interfaces.BaseOperator
+import ru.cft.calculator.utils.Operators.OPERATORS
 import java.math.BigDecimal
 import java.util.*
 
@@ -69,7 +71,9 @@ object CalculationUtils {
                 else -> {
                     // Оператор
                     while (!operationStack.isEmpty() && operationStack.peek() != LEFT_PARENTHESIS
-                        && getOperator(token).precedence <= getOperator(operationStack.peek()).precedence
+                        && getOperator(token).precedence <= getOperator(
+                            operationStack.peek()
+                        ).precedence
                     ) {
                         result.add(operationStack.pop().toString())
                     }
@@ -115,7 +119,8 @@ object CalculationUtils {
                 // Оператор - выполняем вычисление для верхних двух элементов стека
                 val secondOperand = numbers.pop()
                 val firstOperand = if (numbers.empty()) BigDecimal.ZERO else numbers.pop()
-                val result = getOperator(token).applyOperator(firstOperand, secondOperand)
+                val result = getOperator(token)
+                    .applyOperator(firstOperand, secondOperand)
                 if (result > maxPlainNumber) {
                     numbers.push(result)
                 } else {

@@ -1,7 +1,7 @@
-package ru.skillbranch.cft.calculator
+package ru.cft.calculator
 
 import org.junit.Test
-import ru.skillbranch.cft.calculator.utils.CalculationUtils
+import ru.cft.calculator.utils.CalculationUtils
 
 class CalculationTest {
 

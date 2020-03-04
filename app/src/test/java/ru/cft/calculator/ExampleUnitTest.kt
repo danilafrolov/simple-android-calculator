@@ -1,4 +1,4 @@
-package ru.skillbranch.cft.calculator
+package ru.cft.calculator
 
 import org.junit.Test
 
